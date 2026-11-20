@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#fff1f2">
+    <title>Un Mensajero Muy Especial 🐾💌</title>
+
+    <!-- Google Fonts: Quicksand (suave y redondeada) y Dancing Script (manuscrita para la carta) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #fffaf5;
+            --peach: #ffedd5;
+            --rose-soft: #ffe4e6;
+            --rose-mid: #fda4af;
+            --rose-strong: #f43f5e;
+            --rose-deep: #9f1239;
+            --gold: #fbbf24;
+            --text-dark: #4c0519;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Quicksand', sans-serif;
+            color: var(--text-dark);
+            background: linear-gradient(180deg, #fff1f2 0%, #ffedd5 55%, #fef3c7 100%);
+        }
+
+        /* Contenedor principal vertical adaptado a móviles */
+        #app {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 100dvh;
+            margin: 0 auto;
+            padding-top: max(14px, env(safe-area-inset-top));
+            padding-bottom: max(18px, env(safe-area-inset-bottom));
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .font-script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Animaciones dulces */
+        @keyframes catBreathe {
+            0%, 100% { transform: translateY(0px) scaleY(1); }
+            50% { transform: translateY(-4px) scaleY(1.03); }
+        }
+        .anim-breathe {
+            animation: catBreathe 2.4s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        @keyframes tailWag {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(18deg); }
+        }
+        .anim-tail {
+            animation: tailWag 1.8s ease-in-out infinite;
+            transform-origin: 48px 108px;
+        }
+
+        @keyframes floatGentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .anim-float {
+            animation: floatGentle 3s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.12); }
+            50% { transform: scale(0.98); }
+            75% { transform: scale(1.08); }
+        }
+        .anim-heartbeat {
+            animation: heartBeat 1.8s infinite;
+        }
+
+        @keyframes popCard {
+            0% { opacity: 0; transform: scale(0.82) translateY(16px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .anim-pop {
+            animation: popCard 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Botones táctiles grandes y cómodos */
+        .btn-main {
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 22px;
+            border: 3px solid #ffffff;
+            background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%);
+            color: #ffffff;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #9f1239, 0 12px 24px rgba(225, 29, 72, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .btn-main:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #9f1239, 0 5px 12px rgba(225, 29, 72, 0.2);
+        }
+
+        .btn-pill {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 2px solid #fecdd3;
+            background: rgba(255, 255, 255, 0.88);
+            color: #be123c;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(190, 18, 60, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: transform 0.1s ease;
+        }
+        .btn-pill:active {
+            transform: scale(0.95);
+        }
+
+        /* Lienzo del recorrido */
+        #game-stage {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            margin: 10px 0;
+            border-radius: 28px;
+            border: 3px solid #ffffff;
+            background: linear-gradient(180deg, #ffe4e6 0%, #ffedd5 58%, #dcfce7 58%, #bbf7d0 100%);
+            box-shadow: 0 12px 28px rgba(159, 18, 57, 0.12);
+            overflow: hidden;
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Sobre interactivo grande */
+        .envelope-wrapper {
+            perspective: 1000px;
+            cursor: pointer;
+            margin: 14px auto;
+        }
+        .envelope-box {
+            position: relative;
+            width: 270px;
+            height: 180px;
+            background: #fb7185;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 18px 36px rgba(159, 18, 57, 0.25);
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 135px solid transparent;
+            border-right: 135px solid transparent;
+            border-top: 102px solid #e11d48;
+            transform-origin: top;
+            transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s;
+            z-index: 4;
+        }
+        .envelope-box.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+        .envelope-pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 135px solid #fda4af;
+            border-right: 135px solid #fda4af;
+            border-bottom: 92px solid #fecdd3;
+            border-top: 88px solid transparent;
+            border-radius: 0 0 20px 20px;
+            z-index: 3;
+        }
+        .envelope-heart-seal {
+            position: absolute;
+            top: 86px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fde047, #f59e0b);
+            border: 3px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+            z-index: 5;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .envelope-box.open .envelope-heart-seal {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.3);
+        }
+
+        /* Papel de carta texturizado */
+        .letter-paper {
+            background-color: #fffdf9;
+            background-image:
+                linear-gradient(to bottom, transparent 27px, #ffe4e6 28px),
+                radial-gradient(#fecdd3 1px, transparent 1px);
+            background-size: 100% 28px, 20px 20px;
+            border: 3px solid #fda4af;
+            border-radius: 26px;
+            box-shadow: 0 16px 38px rgba(159, 18, 57, 0.18);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Scroll táctil habilitado únicamente en el texto de la carta y en el modal */
+        .touch-scroll {
+            overflow-y: auto;
+            touch-action: pan-y;
+            -webkit-overflow-scrolling: touch;
+        }
+        .touch-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .touch-scroll::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 99px;
+        }
+
+        /* Modal de personalización */
+        #modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(76, 5, 25, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-card {
+            width: 100%;
+            max-width: 420px;
+            max-height: 88dvh;
+            background: #fffaf5;
+            border: 3px solid #fda4af;
+            border-radius: 26px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+        }
+        .input-cute {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 2px solid #fecdd3;
+            background: #ffffff;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #4c0519;
+            outline: none;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        .input-cute:focus {
+            border-color: #f43f5e;
+        }
+    </style>
+</head>
+<body>
+
+    <main id="app">
+
+        <!-- ==========================================================
+             1. PANTALLA DE INICIO
+        =========================================================== -->
+        <section id="view-start" style="display:flex; flex-direction:column; justify-content:space-between; flex:1; text-align:center;">
+            
+            <!-- Barra superior discreta -->
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <button id="btn-sound" class="btn-pill" aria-label="Alternar sonido">🔊 Sonido</button>
+                <button id="btn-edit-start" class="btn-pill">✏️ Personalizar</button>
+            </div>
+
+            <!-- Título y presentación -->
+            <div style="margin-top:6px;">
+                <span style="display:inline-block; background:#ffffff; color:#be123c; font-size:0.78rem; font-weight:700; padding:5px 14px; border-radius:999px; border:1.5px solid #fecdd3; margin-bottom:8px;">
+                    🐾 Un mensajito especial para ti 🐾
+                </span>
+                <h1 style="margin:0; font-size:1.95rem; line-height:1.15; color:#9f1239; font-weight:700;">
+                    Un Mensajero<br>Muy Especial
+                </h1>
+            </div>
+
+            <!-- Ilustración SVG del gatito blanco adorable con carta en el hocico -->
+            <div style="display:flex; justify-content:center; align-items:center; margin:4px 0;">
+                <svg width="240" height="220" viewBox="0 0 240 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Halo pastel -->
+                    <circle cx="120" cy="115" r="90" fill="#FFFFFF" opacity="0.65"/>
+                    <!-- Corazoncitos flotando -->
+                    <text x="42" y="68" font-size="22" class="anim-float">💕</text>
+                    <text x="176" y="64" font-size="20" class="anim-float">✨</text>
+                    <text x="182" y="135" font-size="20" class="anim-float">🌸</text>
+
+                    <!-- Sombra en el suelo -->
+                    <ellipse cx="122" cy="184" rx="54" ry="11" fill="#FDBA74" opacity="0.45"/>
+
+                    <!-- Grupo del Gatito animado -->
+                    <g class="anim-breathe">
+                        <!-- Colita esponjosa moviéndose -->
+                        <path class="anim-tail" d="M68 145C42 142 32 118 45 104C54 94 66 104 62 116C59 125 68 132 78 134" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+                        <path class="anim-tail" d="M68 145C42 142 32 118 45 104C54 94 66 104 62 116C59 125 68 132 78 134" stroke="#FECDD3" stroke-width="2" stroke-linecap="round"/>
+
+                        <!-- Cuerpo gordito blanco -->
+                        <ellipse cx="120" cy="146" rx="44" ry="36" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2.5"/>
+
+                        <!-- Patitas delanteras -->
+                        <ellipse cx="102" cy="176" rx="12" ry="9" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+                        <ellipse cx="138" cy="176" rx="12" ry="9" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+
+                        <!-- Orejitas -->
+                        <path d="M78 82L72 42L104 64Z" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M81 74L78 51L97 65Z" fill="#FDA4AF"/>
+                        <path d="M162 82L168 42L136 64Z" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M159 74L162 51L143 65Z" fill="#FDA4AF"/>
+
+                        <!-- Cabeza redondita -->
+                        <ellipse cx="120" cy="95" rx="48" ry="39" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2.5"/>
+
+                        <!-- Ojitos tiernos brillantes -->
+                        <circle cx="101" cy="90" r="6.5" fill="#4C0519"/>
+                        <circle cx="99" cy="88" r="2.2" fill="#FFFFFF"/>
+                        <circle cx="139" cy="90" r="6.5" fill="#4C0519"/>
+                        <circle cx="137" cy="88" r="2.2" fill="#FFFFFF"/>
+
+                        <!-- Mejillas sonrojadas -->
+                        <ellipse cx="87" cy="101" rx="8" ry="4.5" fill="#FDA4AF" opacity="0.8"/>
+                        <ellipse cx="153" cy="101" rx="8" ry="4.5" fill="#FDA4AF" opacity="0.8"/>
+
+                        <!-- Naricita rosada -->
+                        <path d="M116 98C116 96.5 124 96.5 124 98C124 100 120 102.5 120 102.5C120 102.5 116 100 116 98Z" fill="#FB7185"/>
+
+                        <!-- Bigotitos -->
+                        <line x1="65" y1="95" x2="80" y2="97" stroke="#FDA4AF" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="66" y1="103" x2="80" y2="102" stroke="#FDA4AF" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="175" y1="95" x2="160" y2="97" stroke="#FDA4AF" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="174" y1="103" x2="160" y2="102" stroke="#FDA4AF" stroke-width="2" stroke-linecap="round"/>
+
+                        <!-- Carta de amor en su hocico con sello de corazón -->
+                        <g transform="translate(94, 104) rotate(-5)">
+                            <rect x="0" y="0" width="52" height="34" rx="6" fill="#FFF1F2" stroke="#FB7185" stroke-width="2.2"/>
+                            <path d="M2 2L26 19L50 2" stroke="#FB7185" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Sello de corazón -->
+                            <path d="M26 23C26 23 19 18 19 14C19 11.8 20.8 10.2 22.8 10.2C24.2 10.2 25.4 11 26 12.1C26.6 11 27.8 10.2 29.2 10.2C31.2 10.2 33 11.8 33 14C33 18 26 23 26 23Z" fill="#E11D48"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Texto de introducción -->
+            <p id="start-subtitle" style="margin:0 8px; font-size:0.98rem; line-height:1.45; font-weight:600; color:#881337;">
+                Este gatito lleva una carta muy importante para <strong>Mi Amor</strong>. ¡Ayúdalo a cruzar el jardín!
+            </p>
+
+            <!-- Botón principal grande -->
+            <div style="margin-top:8px;">
+                <button id="btn-start-game" class="btn-main">
+                    <span>Ayudar al gatito</span>
+                    <span>🐾</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================================
+             2. PANTALLA DE RECORRIDO (1 SOLO TOQUE PARA SALTAR)
+        =========================================================== -->
+        <section id="view-game" class="hidden" style="display:flex; flex-direction:column; flex:1; justify-content:space-between;">
+            
+            <!-- Barra superior de progreso hacia la gatita -->
+            <div style="background:rgba(255,255,255,0.9); border:2px solid #ffffff; border-radius:20px; padding:10px 14px; box-shadow:0 4px 12px rgba(159,18,57,0.08);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:0.8rem; font-weight:700; color:#9f1239;">
+                    <span>🐱 En camino...</span>
+                    <span id="hearts-counter" style="background:#ffe4e6; padding:2px 10px; border-radius:99px;">💖 0</span>
+                    <span>🎀 Ella</span>
+                </div>
+                <div style="position:relative; width:100%; height:12px; background:#ffe4e6; border-radius:999px; overflow:visible;">
+                    <div id="progress-fill" style="width:0%; height:100%; background:linear-gradient(90deg, #fb7185, #f43f5e); border-radius:999px; transition:width 0.12s linear;"></div>
+                    <div id="progress-cat-icon" style="position:absolute; top:50%; left:0%; transform:translate(-50%, -50%); font-size:16px; transition:left 0.12s linear;">🐾</div>
+                </div>
+            </div>
+
+            <!-- Área interactiva de juego (tocar cualquier parte hace saltar al gatito) -->
+            <div id="game-stage">
+                <canvas id="game-canvas"></canvas>
+
+                <!-- Globito de diálogo tierno del gatito -->
+                <div id="cat-bubble" style="position:absolute; top:14px; left:50%; transform:translateX(-50%); background:rgba(255,255,255,0.94); border:2px solid #fda4af; border-radius:999px; padding:6px 16px; font-size:0.85rem; font-weight:700; color:#be123c; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,0.08); transition:opacity 0.25s ease;">
+                    ¡Toca la pantalla para dar un saltito! 🐾
+                </div>
+            </div>
+
+            <!-- Indicación inferior amigable -->
+            <div style="text-align:center; font-size:0.85rem; font-weight:700; color:#9f1239; padding:2px 0;">
+                👆 Toca en cualquier lugar para saltar charquitos y recoger corazones
+            </div>
+        </section>
+
+        <!-- ==========================================================
+             3. PANTALLA FINAL: ENTREGA Y LECTURA DE LA CARTA
+        =========================================================== -->
+        <section id="view-finale" class="hidden" style="display:flex; flex-direction:column; flex:1; justify-content:space-between; text-align:center;">
+            
+            <!-- Etapa A: Encuentro con la gatita y sobre cerrado -->
+            <div id="finale-envelope-stage" style="display:flex; flex-direction:column; flex:1; justify-content:center; align-items:center;">
+                
+                <div style="background:#ffffff; border:2px solid #fecdd3; border-radius:999px; padding:6px 16px; font-size:0.85rem; font-weight:700; color:#be123c; margin-bottom:10px; box-shadow:0 4px 12px rgba(190,18,60,0.1);">
+                    ✨ ¡Misión cumplida! Carta entregada ✨
+                </div>
+
+                <!-- Ilustración de los dos gatitos juntos -->
+                <div class="anim-float" style="margin-bottom:4px;">
+                    <svg width="220" height="125" viewBox="0 0 220 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Corazón central -->
+                        <text x="97" y="34" font-size="24" class="anim-heartbeat">💖</text>
+
+                        <!-- Gatito mensajero (izquierda) -->
+                        <g transform="translate(36, 36)">
+                            <path d="M12 28L8 4L28 18Z" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+                            <path d="M56 28L60 4L40 18Z" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+                            <ellipse cx="34" cy="40" rx="30" ry="25" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+                            <!-- Ojitos felices cerrados -->
+                            <path d="M19 37C21 33 25 33 27 37" stroke="#4C0519" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M41 37C43 33 47 33 49 37" stroke="#4C0519" stroke-width="2.5" stroke-linecap="round"/>
+                            <ellipse cx="15" cy="44" rx="5" ry="3" fill="#FDA4AF"/>
+                            <ellipse cx="53" cy="44" rx="5" ry="3" fill="#FDA4AF"/>
+                            <circle cx="34" cy="43" r="2.5" fill="#FB7185"/>
+                        </g>
+
+                        <!-- Gatita receptora con moño rosa (derecha) -->
+                        <g transform="translate(116, 36)">
+                            <path d="M12 28L8 4L28 18Z" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="2"/>
+                            <path d="M56 28L60 4L40 18Z" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="2"/>
+                            <ellipse cx="34" cy="40" rx="30" ry="25" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="2"/>
+                            <!-- Moñito coqueto -->
+                            <path d="M46 12L56 7L54 16L61 20L50 19L46 12Z" fill="#F43F5E"/>
+                            <!-- Ojitos felices -->
+                            <path d="M19 37C21 33 25 33 27 37" stroke="#4C0519" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M41 37C43 33 47 33 49 37" stroke="#4C0519" stroke-width="2.5" stroke-linecap="round"/>
+                            <ellipse cx="15" cy="44" rx="5" ry="3" fill="#FB7185"/>
+                            <ellipse cx="53" cy="44" rx="5" ry="3" fill="#FB7185"/>
+                            <circle cx="34" cy="43" r="2.5" fill="#E11D48"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Sobre interactivo grande -->
+                <div class="envelope-wrapper" id="envelope-trigger">
+                    <div class="envelope-box" id="envelope-box">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-heart-seal">💌</div>
+                        <div class="envelope-pocket"></div>
+                    </div>
+                </div>
+
+                <p style="margin-top:14px; background:rgba(255,255,255,0.88); padding:8px 18px; border-radius:16px; font-size:0.95rem; font-weight:700; color:#881337;">
+                    👆 Toca el sobre para abrir tu carta
+                </p>
+            </div>
+
+            <!-- Etapa B: Carta abierta con frases bonitas -->
+            <div id="finale-letter-stage" class="hidden anim-pop" style="display:flex; flex-direction:column; flex:1; justify-content:space-between; overflow:hidden;">
+                
+                <div class="letter-paper">
+                    <!-- Encabezado de la carta -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px dashed #fecdd3; padding-bottom:8px; margin-bottom:10px;">
+                        <span style="font-size:1.2rem;">🐾</span>
+                        <h2 id="letter-heading" class="font-script" style="margin:0; font-size:1.85rem; color:#be123c;">
+                            Para Mi Amor ❤️
+                        </h2>
+                        <span style="font-size:1.2rem;">🌸</span>
+                    </div>
+
+                    <!-- Etiquetas con frases bonitas destacadas -->
+                    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-bottom:10px;">
+                        <span style="background:#ffe4e6; color:#be123c; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:999px;">✨ Eres mi persona favorita</span>
+                        <span style="background:#fef3c7; color:#b45309; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:999px;">☀️ Iluminas mis días</span>
+                    </div>
+
+                    <!-- Cuerpo personalizable de la carta -->
+                    <div id="letter-content" class="touch-scroll" style="flex:1; text-align:left; font-size:0.96rem; line-height:1.55; font-weight:600; color:#4c0519; padding-right:4px;">
+                        <!-- Texto insertado dinámicamente -->
+                    </div>
+
+                    <!-- Firma -->
+                    <div style="border-top:2px dashed #fecdd3; padding-top:8px; margin-top:10px; text-align:right;">
+                        <span style="display:block; font-size:0.75rem; font-weight:700; color:#9f1239;">Con todo mi cariño,</span>
+                        <span id="letter-signature" class="font-script" style="font-size:1.55rem; color:#be123c; font-weight:700;">
+                            Quien te quiere muchísimo ❤️
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Botones finales -->
+                <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+                    <button id="btn-love-burst" class="btn-main anim-heartbeat">
+                        <span>¡Te quiero muchísimo!</span>
+                        <span>💖</span>
+                    </button>
+
+                    <div style="display:flex; gap:8px;">
+                        <button id="btn-edit-finale" class="btn-pill" style="flex:1; justify-content:center; padding:10px;">
+                            ✏️ Editar carta
+                        </button>
+                        <button id="btn-replay" class="btn-pill" style="flex:1; justify-content:center; padding:10px;">
+                            🔄 Volver a jugar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================================
+         MODAL DE PERSONALIZACIÓN (GUARDADO EN LOCALSTORAGE)
+    =========================================================== -->
+    <div id="modal-overlay" class="hidden">
+        <div class="modal-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #ffe4e6; padding-bottom:8px; margin-bottom:10px;">
+                <h3 style="margin:0; font-size:1.1rem; color:#be123c;">💌 Personalizar Carta</h3>
+                <button id="btn-close-modal" style="width:32px; height:32px; border-radius:50%; border:none; background:#ffe4e6; color:#be123c; font-size:1.2rem; font-weight:700; cursor:pointer;">&times;</button>
+            </div>
+
+            <div class="touch-scroll" style="flex:1; display:flex; flex-direction:column; gap:12px; text-align:left; padding-right:2px;">
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#881337; margin-bottom:4px;">Nombre o apodo de ella:</label>
+                    <input type="text" id="input-her-name" class="input-cute" placeholder="Ej. Mi Amor, Princesa, Mi Vida...">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#881337; margin-bottom:4px;">Mensaje bonito dentro de la carta:</label>
+                    <textarea id="input-letter-body" rows="5" class="input-cute" style="resize:none; line-height:1.45;"></textarea>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#881337; margin-bottom:4px;">Tu firma:</label>
+                    <input type="text" id="input-his-name" class="input-cute" placeholder="Ej. Tu novio que te adora ❤️">
+                </div>
+            </div>
+
+            <button id="btn-save-modal" class="btn-main" style="margin-top:12px; padding:12px;">
+                <span>Guardar cambios</span>
+                <span>✨</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 1. CONFIGURACIÓN PERSONALIZABLE Y LOCALSTORAGE
+         */
+        const STORAGE_KEY = 'gatito_mensajero_amor_v1';
+
+        const DEFAULT_DATA = {
+            herName: 'Mi Amor',
+            hisName: 'Quien te quiere muchísimo ❤️',
+            letterBody:
+                'Eres mi persona favorita en todo el mundo y quería enviarte este gatito para recordarte lo muchísimo que te quiero.\n\n' +
+                'Gracias por iluminar mis días con tu sonrisa tan bonita, por tu ternura y por cada momento tan especial que compartimos juntos.\n\n' +
+                'Contigo todo es más bonito y más feliz. ¡Te quiero hoy y siempre!'
+        };
+
+        let appData = { ...DEFAULT_DATA };
+
+        function loadSavedData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    appData = { ...DEFAULT_DATA, ...JSON.parse(raw) };
+                }
+            } catch (err) {
+                console.warn('No se pudo cargar localStorage:', err);
+            }
+            applyDataToUI();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            } catch (err) {
+                console.warn('No se pudo guardar localStorage:', err);
+            }
+            applyDataToUI();
+        }
+
+        function applyDataToUI() {
+            document.getElementById('start-subtitle').innerHTML =
+                `Este gatito lleva una carta muy importante para <strong>${escapeHtml(appData.herName)}</strong>. ¡Ayúdalo a cruzar el jardín!`;
+            document.getElementById('letter-heading').innerText = `Para ${appData.herName} ❤️`;
+            document.getElementById('letter-signature').innerText = appData.hisName;
+
+            const contentContainer = document.getElementById('letter-content');
+            contentContainer.innerHTML = '';
+            appData.letterBody.split('\n').filter(line => line.trim() !== '').forEach(text => {
+                const p = document.createElement('p');
+                p.style.margin = '0 0 10px 0';
+                p.innerText = text;
+                contentContainer.appendChild(p);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        /**
+         * 2. SINTETIZADOR DE SONIDOS TIERNOS (MAULLIDO SUAVE, CAMPANITAS Y HÁPTICA)
+         */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function vibrateMobile(pattern = 15) {
+            if (navigator.vibrate) {
+                try { navigator.vibrate(pattern); } catch (e) {}
+            }
+        }
+
+        function playCuteSound(kind) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+
+            if (kind === 'meow') {
+                // Maullido dulce agudo con leve curva de tono
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.exponentialRampToValueAtTime(760, now + 0.09);
+                osc.frequency.exponentialRampToValueAtTime(590, now + 0.24);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.11, now + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.26);
+            } else if (kind === 'heart') {
+                // Campanita brillante al recoger corazón
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, now);
+                osc.frequency.setValueAtTime(1174.66, now + 0.07);
+
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.31);
+            } else if (kind === 'splash') {
+                // Chapoteo suave sin frustración
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(340, now);
+                osc.frequency.exponentialRampToValueAtTime(190, now + 0.16);
+
+                gain.gain.setValueAtTime(0.09, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.18);
+            } else if (kind === 'fanfare') {
+                // Acorde dulce de llegada
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.08);
+
+                    gain.gain.setValueAtTime(0.1, now + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.45);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.08);
+                    osc.stop(now + i * 0.08 + 0.46);
+                });
+            }
+        }
+
+        /**
+         * 3. NAVEGACIÓN ENTRE VISTAS
+         */
+        function switchView(viewId) {
+            ['view-start', 'view-game', 'view-finale'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        /**
+         * 4. MOTOR DEL RECORRIDO DEL GATITO (CANVAS 2D SUAVE Y SIN GAME OVER)
+         */
+        let gameRunning = false;
+        let animationFrameId = null;
+
+        function startCatJourney() {
+            switchView('view-game');
+            const stage = document.getElementById('game-stage');
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = stage.clientWidth;
+            canvas.height = stage.clientHeight;
+
+            const groundY = canvas.height * 0.72;
+            const totalDistance = 2400; // Recorrido corto (~14 segundos)
+            let distance = 0;
+            const speed = 3.1; // Velocidad relajada y cómoda
+
+            let heartsCaught = 0;
+            document.getElementById('hearts-counter').innerText = '💖 0';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('progress-cat-icon').style.left = '0%';
+
+            const bubbleEl = document.getElementById('cat-bubble');
+            bubbleEl.innerText = '¡Toca la pantalla para dar un saltito! 🐾';
+            bubbleEl.style.opacity = '1';
+
+            // Estado del gatito
+            const cat = {
+                x: Math.min(95, canvas.width * 0.24),
+                y: groundY,
+                vy: 0,
+                gravity: 0.58,
+                jumpForce: -12.6,
+                isGrounded: true,
+                stepPhase: 0,
+                stumbleTimer: 0
+            };
+
+            // 5 obstáculos muy fáciles y adorables distribuidos en el camino
+            const obstacleTemplates = [
+                { dist: 420,  type: 'puddle', emoji: '💧', label: 'Charquito' },
+                { dist: 820,  type: 'bush',   emoji: '🌷', label: 'Arbusto' },
+                { dist: 1220, type: 'puddle', emoji: '💧', label: 'Charquito' },
+                { dist: 1620, type: 'stone',  emoji: '🪨', label: 'Piedrita' },
+                { dist: 1980, type: 'bush',   emoji: '🌼', label: 'Florecitas' }
+            ];
+
+            const obstacles = obstacleTemplates.map(o => ({
+                ...o,
+                hit: false
+            }));
+
+            // Corazones flotantes para recoger en el camino
+            const floatingHearts = [
+                { dist: 300,  heightOffset: 25, collected: false },
+                { dist: 420,  heightOffset: 88, collected: false },
+                { dist: 640,  heightOffset: 30, collected: false },
+                { dist: 820,  heightOffset: 90, collected: false },
+                { dist: 1050, heightOffset: 30, collected: false },
+                { dist: 1220, heightOffset: 88, collected: false },
+                { dist: 1450, heightOffset: 28, collected: false },
+                { dist: 1620, heightOffset: 90, collected: false },
+                { dist: 1840, heightOffset: 30, collected: false },
+                { dist: 2120, heightOffset: 35, collected: false }
+            ];
+
+            // Decoración del fondo (nubes, flores del pasto, mariposas)
+            const clouds = [
+                { x: 60, y: 55, scale: 0.9 },
+                { x: 220, y: 88, scale: 1.1 },
+                { x: 380, y: 48, scale: 0.85 }
+            ];
+
+            const grassFlowers = Array.from({ length: 14 }, (_, i) => ({
+                x: i * 55,
+                y: groundY + 18 + (i % 3) * 16,
+                icon: i % 2 === 0 ? '🌸' : '🌼'
+            }));
+
+            let particles = [];
+            let bubbleTimeout = null;
+
+            function showCatBubble(text, duration = 1700) {
+                bubbleEl.innerText = text;
+                bubbleEl.style.opacity = '1';
+                clearTimeout(bubbleTimeout);
+                bubbleTimeout = setTimeout(() => {
+                    bubbleEl.style.opacity = '0';
+                }, duration);
+            }
+
+            function spawnParticles(x, y, symbols, count = 6) {
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x,
+                        y,
+                        vx: (Math.random() - 0.5) * 4.5,
+                        vy: -Math.random() * 4 - 1.5,
+                        alpha: 1,
+                        symbol: symbols[Math.floor(Math.random() * symbols.length)],
+                        size: 14 + Math.random() * 6
+                    });
+                }
+            }
+
+            // Acción de salto con un toque en cualquier parte de la pantalla
+            function triggerJump(e) {
+                if (!gameRunning) return;
+                if (e) e.preventDefault();
+                if (cat.isGrounded) {
+                    cat.vy = cat.jumpForce;
+                    cat.isGrounded = false;
+                    playCuteSound('meow');
+                    vibrateMobile(15);
+                    spawnParticles(cat.x, cat.y, ['🐾', '💖', '✨'], 5);
+                }
+            }
+
+            stage.addEventListener('pointerdown', triggerJump);
+
+            // Dibujar gatito blanco vectorial en el canvas
+            function drawCat(x, y, phase, isStumbling) {
+                ctx.save();
+                ctx.translate(x, y);
+
+                // Sombra en el camino
+                const heightAboveGround = Math.max(0, groundY - y);
+                const shadowScale = Math.max(0.45, 1 - heightAboveGround / 160);
+                ctx.fillStyle = 'rgba(159, 18, 57, 0.14)';
+                ctx.beginPath();
+                ctx.ellipse(0, heightAboveGround + 4, 24 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (isStumbling) {
+                    ctx.rotate(Math.sin(phase * 2) * 0.14);
+                }
+
+                const bounce = cat.isGrounded ? Math.abs(Math.sin(phase)) * 4 : 0;
+                ctx.translate(0, -bounce);
+
+                // Colita
+                const tailAngle = Math.sin(phase * 0.8) * 0.35;
+                ctx.save();
+                ctx.translate(-20, -18);
+                ctx.rotate(tailAngle);
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 7;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(-14, -8, -10, -20);
+                ctx.stroke();
+                ctx.restore();
+
+                // Cuerpo blanco
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = '#fecdd3';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.ellipse(0, -18, 22, 16, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Patitas animadas al caminar
+                const legSwing = cat.isGrounded ? Math.sin(phase) * 5 : 4;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(-10 + legSwing, -3, 6, 4.5, 0, 0, Math.PI * 2);
+                ctx.ellipse(10 - legSwing, -3, 6, 4.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Cabeza
+                ctx.beginPath();
+                ctx.ellipse(12, -38, 21, 18, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Orejitas
+                ctx.beginPath();
+                ctx.moveTo(-2, -48);
+                ctx.lineTo(-4, -64);
+                ctx.lineTo(9, -54);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(17, -54);
+                ctx.lineTo(27, -64);
+                ctx.lineTo(28, -47);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Interior rosita oreja
+                ctx.fillStyle = '#fda4af';
+                ctx.beginPath();
+                ctx.moveTo(19, -52);
+                ctx.lineTo(25, -59);
+                ctx.lineTo(26, -49);
+                ctx.closePath();
+                ctx.fill();
+
+                // Ojito (tierno o sorpresita si tropieza)
+                ctx.fillStyle = '#4c0519';
+                if (isStumbling) {
+                    ctx.font = 'bold 11px Quicksand';
+                    ctx.fillText('><', 14, -37);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(19, -40, 3.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(18, -41, 1.1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Mejilla sonrojada
+                ctx.fillStyle = 'rgba(251, 113, 133, 0.75)';
+                ctx.beginPath();
+                ctx.ellipse(13, -33, 4.5, 2.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Carta de amor en su hocico
+                ctx.save();
+                ctx.translate(26, -32);
+                ctx.rotate(-0.12);
+                ctx.fillStyle = '#fff1f2';
+                ctx.strokeStyle = '#f43f5e';
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.roundRect(0, 0, 22, 15, 3);
+                ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(1, 1);
+                ctx.lineTo(11, 8);
+                ctx.lineTo(21, 1);
+                ctx.stroke();
+                ctx.fillStyle = '#e11d48';
+                ctx.beginPath();
+                ctx.arc(11, 8, 2.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                ctx.restore();
+            }
+
+            // Dibujar nubecita suave
+            function drawCloud(cx, cy, scale) {
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.scale(scale, scale);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.82)';
+                ctx.beginPath();
+                ctx.arc(0, 0, 18, 0, Math.PI * 2);
+                ctx.arc(16, -5, 22, 0, Math.PI * 2);
+                ctx.arc(34, 0, 17, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            gameRunning = true;
+
+            function loop() {
+                if (!gameRunning) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Avanzar distancia
+                distance += speed;
+                const progressPct = Math.min(100, (distance / totalDistance) * 100);
+                document.getElementById('progress-fill').style.width = `${progressPct}%`;
+                document.getElementById('progress-cat-icon').style.left = `${progressPct}%`;
+
+                // Nubecitas del cielo
+                clouds.forEach(cl => {
+                    cl.x -= speed * 0.25;
+                    if (cl.x < -70) cl.x = canvas.width + 50;
+                    drawCloud(cl.x, cl.y, cl.scale);
+                });
+
+                // Caminito pastel en el jardín
+                ctx.fillStyle = '#fef3c7';
+                ctx.fillRect(0, groundY - 6, canvas.width, 22);
+                ctx.strokeStyle = '#fde68a';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, groundY - 6);
+                ctx.lineTo(canvas.width, groundY - 6);
+                ctx.moveTo(0, groundY + 16);
+                ctx.lineTo(canvas.width, groundY + 16);
+                ctx.stroke();
+
+                // Florecitas decorativas en el pasto
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                grassFlowers.forEach(fl => {
+                    fl.x -= speed;
+                    if (fl.x < -20) fl.x = canvas.width + 20;
+                    ctx.fillText(fl.icon, fl.x, fl.y);
+                });
+
+                // Física del salto del gatito
+                if (!cat.isGrounded) {
+                    cat.y += cat.vy;
+                    cat.vy += cat.gravity;
+                    if (cat.y >= groundY) {
+                        cat.y = groundY;
+                        cat.vy = 0;
+                        cat.isGrounded = true;
+                    }
+                }
+                cat.stepPhase += 0.24;
+                if (cat.stumbleTimer > 0) cat.stumbleTimer--;
+
+                // Dibujar y verificar los 5 obstáculos amigables
+                obstacles.forEach(obs => {
+                    const screenX = cat.x + (obs.dist - distance);
+                    if (screenX > -50 && screenX < canvas.width + 50) {
+                        if (obs.type === 'puddle') {
+                            // Charquito de agua celeste pastel
+                            ctx.fillStyle = '#bae6fd';
+                            ctx.strokeStyle = '#7dd3fc';
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.ellipse(screenX, groundY + 4, 22, 7, 0, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.stroke();
+                        } else {
+                            ctx.font = '28px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(obs.emoji, screenX, groundY + 2);
+                        }
+
+                        // Detección suave sin perder
+                        if (!obs.hit && Math.abs(screenX - cat.x) < 22 && cat.y > groundY - 22) {
+                            obs.hit = true;
+                            cat.stumbleTimer = 32;
+                            playCuteSound('splash');
+                            vibrateMobile([15, 25, 15]);
+                            spawnParticles(cat.x, cat.y - 10, ['💧', '🐾'], 5);
+                            showCatBubble(
+                                obs.type === 'puddle'
+                                    ? '¡Miau! Casi me mojo 🐾'
+                                    : '¡Ups! Saltito al arbusto 🌷'
+                            );
+                        }
+                    }
+                });
+
+                // Dibujar y recoger corazones flotantes
+                floatingHearts.forEach(fh => {
+                    if (fh.collected) return;
+                    const screenX = cat.x + (fh.dist - distance);
+                    const heartY = groundY - fh.heightOffset + Math.sin(distance * 0.04 + fh.dist) * 5;
+
+                    if (screenX > -40 && screenX < canvas.width + 40) {
+                        ctx.font = '24px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('💖', screenX, heartY);
+
+                        if (Math.hypot(screenX - cat.x, heartY - (cat.y - 24)) < 34) {
+                            fh.collected = true;
+                            heartsCaught++;
+                            document.getElementById('hearts-counter').innerText = `💖 ${heartsCaught}`;
+                            playCuteSound('heart');
+                            vibrateMobile(18);
+                            spawnParticles(screenX, heartY, ['💖', '✨', '💕'], 6);
+                        }
+                    }
+                });
+
+                // Dibujar a la gatita esperando al final del recorrido
+                const goalX = cat.x + (totalDistance - distance);
+                if (goalX < canvas.width + 60) {
+                    ctx.font = '38px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🎀🐱', goalX, groundY - 2);
+                    ctx.font = '20px Arial';
+                    ctx.fillText('💕', goalX, groundY - 42 + Math.sin(distance * 0.08) * 4);
+                }
+
+                // Dibujar al gatito mensajero
+                drawCat(cat.x, cat.y, cat.stepPhase, cat.stumbleTimer > 0);
+
+                // Partículas de patitas y corazones
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.03;
+                    if (p.alpha <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.font = `${p.size}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(p.symbol, p.x, p.y);
+                    ctx.restore();
+                }
+
+                // Llegada a la meta
+                if (distance >= totalDistance) {
+                    gameRunning = false;
+                    stage.removeEventListener('pointerdown', triggerJump);
+                    playCuteSound('fanfare');
+                    vibrateMobile([30, 50, 40]);
+                    showFinale();
+                    return;
+                }
+
+                animationFrameId = requestAnimationFrame(loop);
+            }
+
+            loop();
+        }
+
+        /**
+         * 5. ESCENA FINAL: ENTREGA DEL SOBRE Y LLUVIA DE AMOR
+         */
+        function showFinale() {
+            switchView('view-finale');
+            document.getElementById('envelope-box').classList.remove('open');
+            document.getElementById('finale-envelope-stage').classList.remove('hidden');
+            document.getElementById('finale-letter-stage').classList.add('hidden');
+            launchLoveConfetti(28);
+        }
+
+        document.getElementById('envelope-trigger').addEventListener('click', () => {
+            const box = document.getElementById('envelope-box');
+            if (box.classList.contains('open')) return;
+
+            box.classList.add('open');
+            playCuteSound('fanfare');
+            vibrateMobile([25, 45, 35]);
+            launchLoveConfetti(35);
+
+            setTimeout(() => {
+                document.getElementById('finale-envelope-stage').classList.add('hidden');
+                document.getElementById('finale-letter-stage').classList.remove('hidden');
+            }, 680);
+        });
+
+        function launchLoveConfetti(count = 40) {
+            const icons = ['💖', '🐾', '💕', '🌸', '✨', '💌', '🥰'];
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.innerText = icons[Math.floor(Math.random() * icons.length)];
+                el.style.position = 'fixed';
+                el.style.left = `${Math.random() * 94}vw`;
+                el.style.top = '-32px';
+                el.style.fontSize = `${16 + Math.random() * 16}px`;
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '9999';
+                el.style.transition = `transform ${1.8 + Math.random() * 1.6}s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 2.2s ease-in`;
+                document.body.appendChild(el);
+
+                const driftX = (Math.random() - 0.5) * 140;
+                const dropY = window.innerHeight + 60;
+                const rotateDeg = (Math.random() - 0.5) * 480;
+
+                requestAnimationFrame(() => {
+                    el.style.transform = `translate(${driftX}px, ${dropY}px) rotate(${rotateDeg}deg)`;
+                    el.style.opacity = '0';
+                });
+
+                setTimeout(() => el.remove(), 3500);
+            }
+        }
+
+        document.getElementById('btn-love-burst').addEventListener('click', () => {
+            playCuteSound('fanfare');
+            vibrateMobile([40, 60, 40, 60, 80]);
+            launchLoveConfetti(65);
+        });
+
+        /**
+         * 6. BOTONES DE CONTROL Y MODAL DE PERSONALIZACIÓN
+         */
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            initAudio();
+            playCuteSound('meow');
+            vibrateMobile(18);
+            startCatJourney();
+        });
+
+        document.getElementById('btn-replay').addEventListener('click', () => {
+            playCuteSound('meow');
+            vibrateMobile(15);
+            startCatJourney();
+        });
+
+        document.getElementById('btn-sound').addEventListener('click', (e) => {
+            soundEnabled = !soundEnabled;
+            e.currentTarget.innerText = soundEnabled ? '🔊 Sonido' : '🔇 Silencio';
+        });
+
+        const modalOverlay = document.getElementById('modal-overlay');
+
+        function openCustomizeModal() {
+            document.getElementById('input-her-name').value = appData.herName;
+            document.getElementById('input-letter-body').value = appData.letterBody;
+            document.getElementById('input-his-name').value = appData.hisName;
+            modalOverlay.classList.remove('hidden');
+        }
+
+        document.getElementById('btn-edit-start').addEventListener('click', openCustomizeModal);
+        document.getElementById('btn-edit-finale').addEventListener('click', openCustomizeModal);
+        document.getElementById('btn-close-modal').addEventListener('click', () => {
+            modalOverlay.classList.add('hidden');
+        });
+
+        document.getElementById('btn-save-modal').addEventListener('click', () => {
+            const newHer = document.getElementById('input-her-name').value.trim();
+            const newBody = document.getElementById('input-letter-body').value.trim();
+            const newHis = document.getElementById('input-his-name').value.trim();
+
+            if (newHer) appData.herName = newHer;
+            if (newBody) appData.letterBody = newBody;
+            if (newHis) appData.hisName = newHis;
+
+            saveData();
+            modalOverlay.classList.add('hidden');
+            playCuteSound('heart');
+            vibrateMobile(20);
+        });
+
+        window.onload = function() {
+            loadSavedData();
+        };
+    </script>
+</body>
+</html>
